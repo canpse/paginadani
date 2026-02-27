@@ -30,9 +30,18 @@ body {
   font-family: var(--font-body);
   color: var(--text);
   background:
+    linear-gradient(
+      180deg,
+      rgba(247, 250, 247, 0.92) 0%,
+      rgba(239, 243, 239, 0.86) 44%,
+      rgba(232, 237, 232, 0.92) 100%
+    ),
     radial-gradient(circle at 10% -10%, color-mix(in srgb, var(--accent) 16%, transparent 84%), transparent 32%),
-    radial-gradient(circle at 90% 0%, rgba(255, 255, 255, 0.7), transparent 28%),
-    linear-gradient(180deg, #f6faf7 0%, var(--bg) 44%, #e8ede8 100%);
+    url("/images/Art_of_Jessica_Cioffi_Loputyn_66.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 button,

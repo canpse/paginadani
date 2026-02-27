@@ -1,23 +1,27 @@
 # 01 - Visao
 
 ## Objetivo principal
-Descreva em 1-2 frases o que esse site precisa fazer por ela.
+Criar um diario digital simples e gostoso de usar para ela registrar livros, filmes e series.
+O foco e autonomia: o site funciona sozinho, sem depender de plataformas externas.
 
 ## Resultado emocional esperado
-- O que ela deve sentir ao abrir o site?
-- Qual tom queremos: poetico, artistico, intimo, divertido?
+- Sensacao de controle e organizacao das midias consumidas.
+- Experiencia leve, clara e agradavel no uso diario.
+- Tom principal: intimo e funcional, com toque artistico moderado.
 
 ## Publico
-- Primario: ela
-- Secundario: voce (quem mantem/edita)
+- Primario: ela (uso diario)
+- Secundario: voce (manutencao, evolucao e curadoria)
 
 ## O que este projeto NAO e
-Liste 3 coisas que nao queremos virar.
+- Nao e rede social.
+- Nao e clone de Filmow/Skoob/BDS.
+- Nao e dashboard corporativo complexo.
 
 ## Definicao de sucesso
 Checklist simples:
-- [ ] visual com identidade forte
-- [ ] facil de atualizar
-- [ ] links uteis para plataformas reais
-- [ ] experiencia boa no celular
-
+- [x] visual com identidade forte
+- [x] facil de atualizar
+- [x] experiencia boa no celular
+- [x] deploy disponivel para teste continuo
+- [ ] sincronizacao entre dispositivos

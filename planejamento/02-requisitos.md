@@ -1,25 +1,27 @@
 # 02 - Requisitos
 
-## Funcionais (MVP)
-- [ ] home com identidade clara
-- [ ] secoes de livros, filmes e series
-- [ ] pagina de detalhe por item
-- [ ] links externos por item
-- [ ] busca/filtros (se necessario para MVP)
+## Funcionais (MVP standalone)
+- [x] cadastrar midia
+- [x] editar midia
+- [x] remover midia
+- [x] duplicar registro
+- [x] buscar por texto
+- [x] filtrar por tipo/status/nota
+- [x] ordenar por criterios principais
+- [x] importar/exportar backup em JSON
 
 ## Nao funcionais
-- [ ] rapido para carregar
-- [ ] responsivo (mobile primeiro)
-- [ ] facil de manter
-- [ ] sem dependencias pesadas
+- [x] rapido para carregar
+- [x] responsivo (mobile primeiro)
+- [x] facil de manter
+- [x] sem dependencias pesadas
 
 ## Conteudo minimo para publicar
-- [ ] ao menos 6 itens de exemplo
-- [ ] links reais para plataformas principais
-- [ ] texto de abertura personalizado
+- [x] dados de exemplo para nao abrir vazio
+- [x] texto de abertura personalizado
+- [ ] base real de midias dela preenchida
 
 ## Fora do MVP (por enquanto)
-- painel admin completo
-- autenticacao
-- importacao automatica de APIs externas
-
+- integracao automatica com plataformas externas
+- autenticacao e contas de usuario
+- sincronizacao em nuvem (dados compartilhados)
