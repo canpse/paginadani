@@ -14,6 +14,7 @@ import {
   applyFilters,
   defaultFilters,
   defaultForm,
+  fallbackCoverByType,
   newId,
   normalizeTags,
   parseStoredEntries,
@@ -31,6 +32,7 @@ import {
   type MediaEntry,
   type MediaFilters,
   type MediaFormInput,
+  type MediaType,
 } from "@/types/media";
 import styles from "@/components/MediaTrackerApp.module.css";
 
@@ -40,6 +42,13 @@ interface NoticeState {
   tone: NoticeTone;
   text: string;
 }
+
+const COVER_PRESETS = [
+  "/images/Art_of_Jessica_Cioffi_Loputyn_66.webp",
+  "/images/Art_of_Jessica_Cioffi_Loputyn_40.webp",
+  "/images/Art_of_Jessica_Cioffi_Loputyn_12.webp",
+  "/images/Art_of_Jessica_Cioffi_Loputyn_7.webp",
+];
 
 function useIsClient() {
   return useSyncExternalStore(
@@ -75,6 +84,44 @@ function stars(rating: number): string {
   return `${"★".repeat(rating)}${"☆".repeat(5 - rating)}`;
 }
 
+function excerpt(text: string, max = 180): string {
+  const normalized = text.trim();
+
+  if (normalized.length === 0) {
+    return "Ainda sem anotacao. Vale registrar a sensacao principal desse consumo.";
+  }
+
+  if (normalized.length <= max) {
+    return normalized;
+  }
+
+  return `${normalized.slice(0, max).trimEnd()}...`;
+}
+
+function monthYear(value: string): string {
+  const [year, month] = value.split("-");
+
+  if (!year || !month) {
+    return "sem data";
+  }
+
+  return `${month}/${year}`;
+}
+
+function normalizeCoverInput(raw: string, type: MediaType): string {
+  const value = raw.trim();
+
+  if (value.length === 0) {
+    return fallbackCoverByType[type];
+  }
+
+  if (value.startsWith("/") || value.startsWith("http://") || value.startsWith("https://")) {
+    return value;
+  }
+
+  return `/${value}`;
+}
+
 export default function MediaTrackerApp() {
   const isClient = useIsClient();
 
@@ -93,11 +140,15 @@ export default function MediaTrackerApp() {
     consumedOn: todayIsoDate(),
   });
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [composerOpen, setComposerOpen] = useState(false);
   const [notice, setNotice] = useState<NoticeState | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const filteredEntries = useMemo(() => applyFilters(entries, filters), [entries, filters]);
+  const featuredEntry = filteredEntries[0] ?? null;
+  const secondaryEntries = filteredEntries.slice(1);
+  const composerCover = normalizeCoverInput(form.coverImage, form.type);
 
   const stats = useMemo(() => {
     const total = entries.length;
@@ -125,7 +176,24 @@ export default function MediaTrackerApp() {
 
     return Array.from(counter.entries())
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 4);
+      .slice(0, 8);
+  }, [entries]);
+
+  const archive = useMemo(() => {
+    const counter = new Map<string, number>();
+
+    for (const entry of entries) {
+      const key = entry.consumedOn.slice(0, 7);
+      if (key.length !== 7) {
+        continue;
+      }
+
+      counter.set(key, (counter.get(key) ?? 0) + 1);
+    }
+
+    return Array.from(counter.entries())
+      .sort((a, b) => b[0].localeCompare(a[0]))
+      .slice(0, 8);
   }, [entries]);
 
   const isEditing = editingId !== null;
@@ -153,12 +221,22 @@ export default function MediaTrackerApp() {
 
   function resetForm() {
     setEditingId(null);
-    setForm({ ...defaultForm, consumedOn: todayIsoDate() });
+    setForm({
+      ...defaultForm,
+      consumedOn: todayIsoDate(),
+      coverImage: fallbackCoverByType.filme,
+    });
+  }
+
+  function openComposerForCreate() {
+    resetForm();
+    setComposerOpen(true);
   }
 
   function startEditing(entry: MediaEntry) {
     setEditingId(entry.id);
     setForm(toFormInput(entry));
+    setComposerOpen(true);
   }
 
   function duplicateEntry(entry: MediaEntry) {
@@ -173,7 +251,7 @@ export default function MediaTrackerApp() {
     };
 
     saveEntries([duplicated, ...entries]);
-    showNotice("ok", "Registro duplicado.");
+    showNotice("ok", "Post duplicado.");
   }
 
   function removeEntry(id: string) {
@@ -192,25 +270,27 @@ export default function MediaTrackerApp() {
 
     if (editingId === id) {
       resetForm();
+      setComposerOpen(false);
     }
 
-    showNotice("ok", "Registro removido.");
+    showNotice("ok", "Post removido.");
   }
 
   function clearAll() {
     if (entries.length === 0) {
-      showNotice("warn", "Nao ha registros para limpar.");
+      showNotice("warn", "Nao ha posts para limpar.");
       return;
     }
 
-    const confirmed = window.confirm("Limpar todos os registros? Esta acao nao pode ser desfeita.");
+    const confirmed = window.confirm("Limpar todos os posts? Esta acao nao pode ser desfeita.");
     if (!confirmed) {
       return;
     }
 
     saveEntries([]);
     resetForm();
-    showNotice("warn", "Todos os registros foram removidos.");
+    setComposerOpen(false);
+    showNotice("warn", "Todos os posts foram removidos.");
   }
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -224,6 +304,8 @@ export default function MediaTrackerApp() {
 
     const now = new Date().toISOString();
     const tags = normalizeTags(form.tagsText);
+    const shortNotes = form.notes.trim().slice(0, 380);
+    const coverImage = normalizeCoverInput(form.coverImage, form.type);
 
     if (isEditing) {
       const next = entries.map((entry) => {
@@ -235,18 +317,20 @@ export default function MediaTrackerApp() {
           ...entry,
           title,
           type: form.type,
+          coverImage,
           status: form.status,
           rating: form.rating,
           consumedOn: form.consumedOn,
-          notes: form.notes.trim(),
+          notes: shortNotes,
           tags,
           updatedAt: now,
         };
       });
 
       saveEntries(next);
-      showNotice("ok", "Registro atualizado.");
+      showNotice("ok", "Post atualizado.");
       resetForm();
+      setComposerOpen(false);
       return;
     }
 
@@ -254,18 +338,20 @@ export default function MediaTrackerApp() {
       id: newId(),
       title,
       type: form.type,
+      coverImage,
       status: form.status,
       rating: form.rating,
       consumedOn: form.consumedOn,
-      notes: form.notes.trim(),
+      notes: shortNotes,
       tags,
       createdAt: now,
       updatedAt: now,
     };
 
     saveEntries([newEntry, ...entries]);
-    showNotice("ok", "Registro criado.");
+    showNotice("ok", "Post criado.");
     resetForm();
+    setComposerOpen(false);
   }
 
   function onExport() {
@@ -302,7 +388,8 @@ export default function MediaTrackerApp() {
 
       saveEntries(parsed);
       resetForm();
-      showNotice("ok", `Importacao concluida com ${parsed.length} registros.`);
+      setComposerOpen(false);
+      showNotice("ok", `Importacao concluida com ${parsed.length} posts.`);
     };
 
     reader.onerror = () => {
@@ -316,7 +403,7 @@ export default function MediaTrackerApp() {
     return (
       <div className={styles.page}>
         <section className={styles.loadingCard}>
-          <p>Carregando seus registros...</p>
+          <p>Carregando o caderno...</p>
         </section>
       </div>
     );
@@ -324,17 +411,20 @@ export default function MediaTrackerApp() {
 
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
+      <header className={styles.hero}>
         <div>
-          <p className={styles.kicker}>Wisenerd Tracker</p>
-          <h1>Diario de Midias</h1>
+          <p className={styles.kicker}>wisenerd journal</p>
+          <h1>Caderno de Midias</h1>
           <p className={styles.subtitle}>
-            Uma plataforma simples para registrar o que ela assiste e le com conforto,
-            clareza e controle total dos dados.
+            Um arquivo misterioso em formato de caderno antigo para registrar o que ela le,
+            assiste e sente em textos curtos.
           </p>
         </div>
 
-        <div className={styles.headerActions}>
+        <div className={styles.heroActions}>
+          <button className={styles.primaryButton} onClick={openComposerForCreate} type="button">
+            Novo post
+          </button>
           <button className={styles.secondaryButton} onClick={onExport} type="button">
             Exportar JSON
           </button>
@@ -362,31 +452,12 @@ export default function MediaTrackerApp() {
         <p className={notice.tone === "ok" ? styles.noticeOk : styles.noticeWarn}>{notice.text}</p>
       ) : null}
 
-      <section className={styles.statsGrid}>
-        <article className={styles.statCard}>
-          <p>Total</p>
-          <strong>{stats.total}</strong>
-        </article>
-        <article className={styles.statCard}>
-          <p>Concluidos</p>
-          <strong>{stats.completed}</strong>
-        </article>
-        <article className={styles.statCard}>
-          <p>Consumindo</p>
-          <strong>{stats.inProgress}</strong>
-        </article>
-        <article className={styles.statCard}>
-          <p>Nota media</p>
-          <strong>{stats.averageRating.toFixed(1)}</strong>
-        </article>
-      </section>
-
       <section className={styles.controls}>
         <label className={styles.controlField}>
-          <span>Buscar</span>
+          <span>Buscar no caderno</span>
           <input
             onChange={(event) => updateFilter("query", event.target.value)}
-            placeholder="Titulo, nota ou tag"
+            placeholder="Titulo, tag ou trecho"
             type="search"
             value={filters.query}
           />
@@ -474,43 +545,79 @@ export default function MediaTrackerApp() {
         </button>
       </section>
 
-      <section className={styles.contentGrid}>
-        <section className={styles.listPanel}>
-          <div className={styles.panelHeader}>
-            <h2>Registros</h2>
-            <p>{filteredEntries.length} visiveis</p>
-          </div>
+      <section className={styles.blogLayout}>
+        <main className={styles.feedColumn}>
+          {featuredEntry ? (
+            <article className={styles.featuredPost}>
+              <div className={styles.featuredMedia}>
+                <img alt={`Capa de ${featuredEntry.title}`} src={featuredEntry.coverImage} />
+              </div>
 
-          {topTags.length > 0 ? (
-            <div className={styles.tagCloud}>
-              {topTags.map(([tag, count]) => (
-                <span key={tag}>{tag} ({count})</span>
-              ))}
-            </div>
-          ) : null}
+              <div className={styles.postMetaTop}>
+                <span>{typeLabel(featuredEntry.type)}</span>
+                <span>{statusLabel(featuredEntry.status)}</span>
+                <span>{stars(featuredEntry.rating)}</span>
+              </div>
 
-          {filteredEntries.length === 0 ? (
-            <div className={styles.emptyState}>
-              <p>Nenhum registro encontrado para os filtros atuais.</p>
-            </div>
+              <h2>{featuredEntry.title}</h2>
+
+              <p className={styles.postDates}>
+                Consumido em {prettyDate(featuredEntry.consumedOn)} | atualizado em{" "}
+                {prettyDate(featuredEntry.updatedAt.slice(0, 10))}
+              </p>
+
+              <p className={styles.postBody}>{excerpt(featuredEntry.notes, 250)}</p>
+
+              {featuredEntry.tags.length > 0 ? (
+                <div className={styles.tagRow}>
+                  {featuredEntry.tags.map((tag) => (
+                    <span key={`${featuredEntry.id}-${tag}`}>#{tag}</span>
+                  ))}
+                </div>
+              ) : null}
+
+              <div className={styles.postActions}>
+                <button onClick={() => startEditing(featuredEntry)} type="button">
+                  Editar post
+                </button>
+                <button onClick={() => duplicateEntry(featuredEntry)} type="button">
+                  Duplicar
+                </button>
+                <button
+                  className={styles.textDanger}
+                  onClick={() => removeEntry(featuredEntry.id)}
+                  type="button"
+                >
+                  Remover
+                </button>
+              </div>
+            </article>
           ) : (
-            <ul className={styles.entryList}>
-              {filteredEntries.map((entry) => (
-                <li className={styles.entryCard} key={entry.id}>
-                  <div className={styles.entryTop}>
-                    <span className={styles.badge}>{typeLabel(entry.type)}</span>
-                    <span className={styles.rating}>{stars(entry.rating)}</span>
+            <article className={styles.emptyState}>
+              <h2>Seu caderno ainda esta vazio</h2>
+              <p>Crie o primeiro post para começar o arquivo de midias.</p>
+              <button className={styles.primaryButton} onClick={openComposerForCreate} type="button">
+                Criar primeiro post
+              </button>
+            </article>
+          )}
+
+          {secondaryEntries.length > 0 ? (
+            <div className={styles.postGrid}>
+              {secondaryEntries.map((entry) => (
+                <article className={styles.postCard} key={entry.id}>
+                  <div className={styles.postThumbWrap}>
+                    <img alt={`Capa de ${entry.title}`} className={styles.postThumb} src={entry.coverImage} />
+                  </div>
+
+                  <div className={styles.postMetaTop}>
+                    <span>{typeLabel(entry.type)}</span>
+                    <span>{prettyDate(entry.consumedOn)}</span>
+                    <span>{stars(entry.rating)}</span>
                   </div>
 
                   <h3>{entry.title}</h3>
-
-                  <p className={styles.entryMeta}>
-                    {statusLabel(entry.status)} | {prettyDate(entry.consumedOn)}
-                  </p>
-
-                  <p className={styles.entryNotes}>
-                    {entry.notes.length > 0 ? entry.notes : "Sem anotacoes por enquanto."}
-                  </p>
+                  <p className={styles.postExcerpt}>{excerpt(entry.notes, 140)}</p>
 
                   {entry.tags.length > 0 ? (
                     <div className={styles.tagRow}>
@@ -520,27 +627,76 @@ export default function MediaTrackerApp() {
                     </div>
                   ) : null}
 
-                  <div className={styles.entryActions}>
+                  <div className={styles.postActions}>
                     <button onClick={() => startEditing(entry)} type="button">
                       Editar
                     </button>
                     <button onClick={() => duplicateEntry(entry)} type="button">
                       Duplicar
                     </button>
-                    <button className={styles.textDanger} onClick={() => removeEntry(entry.id)} type="button">
+                    <button
+                      className={styles.textDanger}
+                      onClick={() => removeEntry(entry.id)}
+                      type="button"
+                    >
                       Remover
                     </button>
                   </div>
-                </li>
+                </article>
               ))}
-            </ul>
-          )}
-        </section>
+            </div>
+          ) : null}
+        </main>
 
-        <aside className={styles.formPanel}>
-          <div className={styles.panelHeader}>
-            <h2>{isEditing ? "Editar registro" : "Novo registro"}</h2>
-            {isEditing ? <p>id: {editingId}</p> : <p>preencha os campos</p>}
+        <aside className={styles.sidebar}>
+          <section className={styles.sideCard}>
+            <h3>Resumo</h3>
+            <ul>
+              <li>Total de posts: {stats.total}</li>
+              <li>Concluidos: {stats.completed}</li>
+              <li>Consumindo: {stats.inProgress}</li>
+              <li>Nota media: {stats.averageRating.toFixed(1)}</li>
+              <li>Posts visiveis: {filteredEntries.length}</li>
+            </ul>
+          </section>
+
+          <section className={styles.sideCard}>
+            <h3>Tags frequentes</h3>
+            {topTags.length > 0 ? (
+              <div className={styles.tagCloud}>
+                {topTags.map(([tag, count]) => (
+                  <span key={tag}>#{tag} ({count})</span>
+                ))}
+              </div>
+            ) : (
+              <p className={styles.sideEmpty}>Sem tags ainda.</p>
+            )}
+          </section>
+
+          <section className={styles.sideCard}>
+            <h3>Arquivo</h3>
+            {archive.length > 0 ? (
+              <ul>
+                {archive.map(([month, count]) => (
+                  <li key={month}>
+                    {monthYear(month)}: {count}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className={styles.sideEmpty}>Sem datas registradas.</p>
+            )}
+          </section>
+        </aside>
+      </section>
+
+      {composerOpen ? (
+        <section className={styles.composerPanel}>
+          <div className={styles.composerHeader}>
+            <h2>{isEditing ? "Editar post" : "Escrever novo post"}</h2>
+            <button className={styles.secondaryButton} onClick={() => setComposerOpen(false)} type="button">
+              Fechar
+            </button>
           </div>
 
           <form className={styles.form} onSubmit={onSubmit}>
@@ -612,6 +768,33 @@ export default function MediaTrackerApp() {
             </div>
 
             <label>
+              <span>Imagem do post (caminho)</span>
+              <input
+                onChange={(event) => updateForm("coverImage", event.target.value)}
+                placeholder="/images/Art_of_Jessica_Cioffi_Loputyn_66.webp"
+                type="text"
+                value={form.coverImage}
+              />
+            </label>
+
+            <div className={styles.coverPresetRow}>
+              {COVER_PRESETS.map((path, index) => (
+                <button
+                  className={styles.presetButton}
+                  key={path}
+                  onClick={() => updateForm("coverImage", path)}
+                  type="button"
+                >
+                  imagem {index + 1}
+                </button>
+              ))}
+            </div>
+
+            <div className={styles.coverPreview}>
+              <img alt="Preview da capa" src={composerCover} />
+            </div>
+
+            <label>
               <span>Tags (separadas por virgula)</span>
               <input
                 maxLength={200}
@@ -623,28 +806,28 @@ export default function MediaTrackerApp() {
             </label>
 
             <label>
-              <span>Anotacoes</span>
+              <span>Texto do post (curto, ate 380 caracteres)</span>
               <textarea
-                maxLength={1200}
+                maxLength={380}
                 onChange={(event) => updateForm("notes", event.target.value)}
-                placeholder="Escreva sua impressao principal"
-                rows={8}
+                placeholder="Escreva em 2-4 linhas a impressao principal"
+                rows={5}
                 value={form.notes}
               />
             </label>
 
             <div className={styles.formActions}>
               <button className={styles.primaryButton} type="submit">
-                {isEditing ? "Salvar alteracoes" : "Criar registro"}
+                {isEditing ? "Salvar post" : "Publicar post"}
               </button>
 
               <button className={styles.secondaryButton} onClick={resetForm} type="button">
-                {isEditing ? "Cancelar edicao" : "Limpar formulario"}
+                {isEditing ? "Cancelar edicao" : "Limpar"}
               </button>
             </div>
           </form>
-        </aside>
-      </section>
+        </section>
+      ) : null}
     </div>
   );
 }

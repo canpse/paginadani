@@ -11,18 +11,25 @@
 - [x] persistencia local (localStorage)
 - [x] import/export JSON
 
-## Fase 3 - Refino de UX (proxima)
+## Fase 3 - Refino de UX (atual)
 - [ ] melhorar microcopy dos campos e estados vazios
 - [ ] reduzir passos para adicionar novo item
 - [ ] revisar contraste e legibilidade em mobile
 - [ ] polir feedbacks de sucesso/erro
 
-## Fase 4 - Dados compartilhados
+## Fase 4 - Rework Diegetico (proxima)
+- [ ] converter layout para caderno diegetico
+- [ ] aplicar direcao dark academia inspirada em Loputyn
+- [ ] integrar componentes visuais (pagina, etiqueta, carimbo)
+- [ ] manter editor simples dentro da estetica
+- [ ] validar com usuaria em 2 ciclos curtos
+
+## Fase 5 - Dados compartilhados
 - [ ] definir backend (Supabase/Firebase/Prisma)
 - [ ] modelar sincronizacao entre dispositivos
 - [ ] migrar do localStorage para persistencia remota
 
-## Fase 5 - Integracoes externas
+## Fase 6 - Integracoes externas
 - [ ] mapear estrategia para Filmow/Skoob/BDS/Instagram
 - [ ] implementar links por item (manual)
 - [ ] avaliar importadores automatizados (se viavel)

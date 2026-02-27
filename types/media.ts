@@ -10,6 +10,7 @@ export interface MediaEntry {
   id: string;
   title: string;
   type: MediaType;
+  coverImage: string;
   status: MediaStatus;
   rating: number;
   consumedOn: string;
@@ -31,6 +32,7 @@ export interface MediaFilters {
 export interface MediaFormInput {
   title: string;
   type: MediaType;
+  coverImage: string;
   status: MediaStatus;
   rating: number;
   consumedOn: string;

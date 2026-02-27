@@ -1,123 +1,114 @@
 .page {
-  width: min(1180px, calc(100% - 2rem));
+  width: min(1160px, calc(100% - 2rem));
   margin: 0 auto;
-  padding: 2rem 0 2.5rem;
+  padding: 2rem 0 3rem;
   display: grid;
   gap: 1rem;
 }
 
 .loadingCard {
   border: 1px solid var(--line);
-  border-radius: 1rem;
-  background: var(--surface);
-  padding: 1.1rem;
+  border-radius: 0.95rem;
+  background: color-mix(in srgb, var(--surface) 94%, #fff 6%);
+  padding: 1rem;
   color: var(--muted);
 }
 
-.header {
+.hero {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--surface) 95%, #fff 5%), color-mix(in srgb, var(--surface-2) 80%, #000 20%)),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.03) 0 1px, transparent 1px 16px);
+  box-shadow:
+    0 10px 18px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 1px color-mix(in srgb, var(--line) 55%, transparent 45%);
+  padding: 1.1rem;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-  background: var(--surface);
-  padding: 1rem;
 }
 
 .kicker {
-  font-size: 0.76rem;
+  color: var(--muted);
+  font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--muted);
 }
 
-.header h1 {
+.hero h1 {
   margin-top: 0.15rem;
   font-family: var(--font-title);
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  line-height: 0.96;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  line-height: 0.94;
+  color: color-mix(in srgb, var(--text) 92%, #000 8%);
 }
 
 .subtitle {
   margin-top: 0.6rem;
   max-width: 62ch;
   color: var(--text-soft);
+  line-height: 1.52;
 }
 
-.headerActions {
+.heroActions {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 .noticeOk,
 .noticeWarn {
   border-radius: 0.75rem;
-  padding: 0.6rem 0.75rem;
+  padding: 0.56rem 0.72rem;
   border: 1px solid transparent;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
 }
 
 .noticeOk {
   background: color-mix(in srgb, var(--ok) 14%, var(--surface) 86%);
-  border-color: color-mix(in srgb, var(--ok) 54%, transparent 46%);
+  border-color: color-mix(in srgb, var(--ok) 50%, transparent 50%);
 }
 
 .noticeWarn {
-  background: color-mix(in srgb, var(--warn) 18%, var(--surface) 82%);
-  border-color: color-mix(in srgb, var(--warn) 58%, transparent 42%);
-}
-
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
-  gap: 0.65rem;
-}
-
-.statCard {
-  border: 1px solid var(--line);
-  border-radius: 0.9rem;
-  background: var(--surface);
-  padding: 0.75rem 0.8rem;
-}
-
-.statCard p {
-  color: var(--muted);
-  font-size: 0.8rem;
-}
-
-.statCard strong {
-  display: block;
-  margin-top: 0.25rem;
-  font-size: 1.2rem;
-  font-family: var(--font-title);
+  background: color-mix(in srgb, var(--warn) 16%, var(--surface) 84%);
+  border-color: color-mix(in srgb, var(--warn) 56%, transparent 44%);
 }
 
 .controls {
+  border: 1px solid var(--line);
+  border-radius: 0.92rem;
+  background: color-mix(in srgb, var(--surface) 94%, #fff 6%);
+  padding: 0.78rem;
   display: grid;
   grid-template-columns: repeat(6, minmax(130px, 1fr));
-  gap: 0.6rem;
-  border: 1px solid var(--line);
-  border-radius: 0.9rem;
-  background: var(--surface);
-  padding: 0.8rem;
+  gap: 0.56rem;
   align-items: end;
 }
 
 .controlField {
   display: grid;
   gap: 0.3rem;
-  font-size: 0.74rem;
   color: var(--muted);
+  font-size: 0.74rem;
 }
 
 .controlField input,
-.controlField select {
+.controlField select,
+.form input,
+.form select,
+.form textarea,
+.resetButton,
+.postActions button,
+.primaryButton,
+.secondaryButton,
+.dangerButton,
+.presetButton {
   border: 1px solid var(--line);
   border-radius: 0.58rem;
-  background: var(--surface-2);
+  background: color-mix(in srgb, var(--surface-2) 93%, #fff 7%);
   color: var(--text);
   padding: 0.5rem 0.58rem;
   font-size: 0.88rem;
@@ -128,179 +119,245 @@
 .form input:focus,
 .form select:focus,
 .form textarea:focus {
-  outline: 2px solid color-mix(in srgb, var(--accent) 32%, transparent 68%);
-  border-color: color-mix(in srgb, var(--accent) 62%, transparent 38%);
+  outline: 2px solid color-mix(in srgb, var(--accent) 30%, transparent 70%);
+  border-color: color-mix(in srgb, var(--accent) 64%, transparent 36%);
 }
 
-.resetButton {
-  border: 1px solid var(--line);
-  border-radius: 0.58rem;
-  background: var(--surface-2);
-  color: var(--text-soft);
-  padding: 0.5rem 0.6rem;
-  cursor: pointer;
-}
-
-.contentGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.38fr) minmax(320px, 1fr);
-  gap: 0.8rem;
-}
-
-.listPanel,
-.formPanel {
-  border: 1px solid var(--line);
-  border-radius: 0.9rem;
-  background: var(--surface);
-  padding: 0.85rem;
-}
-
-.panelHeader {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.8rem;
-  align-items: baseline;
-}
-
-.panelHeader h2 {
-  font-size: 1.05rem;
-}
-
-.panelHeader p {
-  color: var(--muted);
-  font-size: 0.8rem;
-}
-
-.tagCloud {
-  margin-top: 0.7rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.tagCloud span {
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--accent) 58%, transparent 42%);
-  padding: 0.14rem 0.5rem;
-  font-size: 0.76rem;
-  background: color-mix(in srgb, var(--accent) 10%, transparent 90%);
-}
-
-.entryList {
-  margin-top: 0.8rem;
-  list-style: none;
-  display: grid;
-  gap: 0.6rem;
-  max-height: 68vh;
-  overflow: auto;
-  padding-right: 0.2rem;
-}
-
-.entryCard {
-  border: 1px solid var(--line);
-  border-radius: 0.8rem;
-  background: var(--surface-2);
-  padding: 0.7rem;
-  display: grid;
-  gap: 0.5rem;
-}
-
-.entryTop {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.6rem;
-  align-items: center;
-}
-
-.badge {
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--accent) 64%, transparent 36%);
-  padding: 0.14rem 0.45rem;
-  font-size: 0.72rem;
-  background: color-mix(in srgb, var(--accent) 14%, transparent 86%);
-}
-
-.rating {
-  font-size: 0.82rem;
-  color: var(--text-soft);
-}
-
-.entryCard h3 {
-  font-size: 1.03rem;
-  line-height: 1.2;
-}
-
-.entryMeta {
-  color: var(--muted);
-  font-size: 0.8rem;
-}
-
-.entryNotes {
-  font-size: 0.9rem;
-  color: var(--text-soft);
-  line-height: 1.42;
-}
-
-.tagRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.tagRow span {
-  font-size: 0.76rem;
-  color: var(--muted);
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  padding: 0.1rem 0.44rem;
-}
-
-.entryActions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.42rem;
-}
-
-.entryActions button,
+.resetButton,
+.postActions button,
 .primaryButton,
 .secondaryButton,
-.dangerButton {
-  border-radius: 0.58rem;
-  border: 1px solid var(--line);
-  padding: 0.42rem 0.62rem;
-  font-size: 0.84rem;
+.dangerButton,
+.presetButton {
   cursor: pointer;
-  background: var(--surface-2);
-  color: var(--text);
 }
 
-.entryActions button:hover,
+.resetButton:hover,
+.postActions button:hover,
 .primaryButton:hover,
 .secondaryButton:hover,
 .dangerButton:hover,
-.resetButton:hover {
-  filter: brightness(1.06);
+.presetButton:hover {
+  filter: brightness(1.05);
 }
 
 .primaryButton {
-  border-color: color-mix(in srgb, var(--accent) 62%, transparent 38%);
+  border-color: color-mix(in srgb, var(--accent) 68%, transparent 32%);
   background: color-mix(in srgb, var(--accent) 16%, var(--surface-2) 84%);
 }
 
 .dangerButton,
 .textDanger {
   color: var(--danger);
-  border-color: color-mix(in srgb, var(--danger) 64%, transparent 36%);
+  border-color: color-mix(in srgb, var(--danger) 62%, transparent 38%);
 }
 
 .textDanger {
-  background: color-mix(in srgb, var(--danger) 10%, var(--surface-2) 90%);
+  background: color-mix(in srgb, var(--danger) 12%, var(--surface-2) 88%);
+}
+
+.blogLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(250px, 0.8fr);
+  gap: 0.8rem;
+}
+
+.feedColumn {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.featuredPost {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface) 95%, #fff 5%);
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.18),
+    inset 0 0 0 1px color-mix(in srgb, var(--line) 48%, transparent 52%);
+  padding: 0.95rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.featuredMedia {
+  border: 1px solid color-mix(in srgb, var(--line) 75%, transparent 25%);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  min-height: 230px;
+  max-height: 290px;
+}
+
+.featuredMedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.postMetaTop {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+}
+
+.postMetaTop span {
+  border: 1px solid color-mix(in srgb, var(--line) 75%, transparent 25%);
+  border-radius: 999px;
+  padding: 0.12rem 0.44rem;
+  font-size: 0.73rem;
+  color: var(--text-soft);
+  background: color-mix(in srgb, var(--surface-2) 90%, #fff 10%);
+}
+
+.featuredPost h2 {
+  font-family: var(--font-title);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 0.96;
+}
+
+.postDates {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.postBody {
+  line-height: 1.6;
+  color: var(--text-soft);
+  font-size: 0.98rem;
+}
+
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.34rem;
+}
+
+.tagRow span {
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 54%, transparent 46%);
+  padding: 0.12rem 0.45rem;
+  font-size: 0.74rem;
+  color: var(--text-soft);
+  background: color-mix(in srgb, var(--accent) 10%, transparent 90%);
+}
+
+.postActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.postGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.64rem;
+}
+
+.postCard {
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--surface) 95%, #fff 5%);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.16);
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.48rem;
+}
+
+.postThumbWrap {
+  border: 1px solid color-mix(in srgb, var(--line) 75%, transparent 25%);
+  border-radius: 0.66rem;
+  overflow: hidden;
+  height: 142px;
+}
+
+.postThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.postCard h3 {
+  font-family: var(--font-title);
+  font-size: 1.23rem;
+  line-height: 1.05;
+}
+
+.postExcerpt {
+  color: var(--text-soft);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.sidebar {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+}
+
+.sideCard {
+  border: 1px solid var(--line);
+  border-radius: 0.86rem;
+  background: color-mix(in srgb, var(--surface) 95%, #fff 5%);
+  padding: 0.74rem;
+  display: grid;
+  gap: 0.48rem;
+}
+
+.sideCard h3 {
+  font-size: 0.98rem;
+}
+
+.sideCard ul {
+  list-style: none;
+  display: grid;
+  gap: 0.24rem;
+  color: var(--text-soft);
+  font-size: 0.87rem;
+}
+
+.sideEmpty {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.tagCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.34rem;
+}
+
+.tagCloud span {
+  border: 1px solid color-mix(in srgb, var(--accent) 54%, transparent 46%);
+  border-radius: 999px;
+  padding: 0.12rem 0.45rem;
+  font-size: 0.74rem;
+  background: color-mix(in srgb, var(--accent) 10%, transparent 90%);
+}
+
+.composerPanel {
+  border: 1px solid var(--line);
+  border-radius: 0.96rem;
+  background: color-mix(in srgb, var(--surface) 95%, #fff 5%);
+  padding: 0.88rem;
+  display: grid;
+  gap: 0.72rem;
+}
+
+.composerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.composerHeader h2 {
+  font-size: 1.1rem;
 }
 
 .form {
-  margin-top: 0.75rem;
   display: grid;
-  gap: 0.65rem;
+  gap: 0.64rem;
 }
 
 .form label {
@@ -313,17 +370,6 @@
   font-size: 0.75rem;
 }
 
-.form input,
-.form select,
-.form textarea {
-  border: 1px solid var(--line);
-  border-radius: 0.58rem;
-  background: var(--surface-2);
-  color: var(--text);
-  padding: 0.52rem 0.6rem;
-  font-size: 0.9rem;
-}
-
 .form textarea {
   resize: vertical;
 }
@@ -331,7 +377,32 @@
 .formRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.6rem;
+  gap: 0.55rem;
+}
+
+.coverPresetRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+}
+
+.presetButton {
+  padding-inline: 0.58rem;
+}
+
+.coverPreview {
+  border: 1px solid color-mix(in srgb, var(--line) 74%, transparent 26%);
+  border-radius: 0.68rem;
+  overflow: hidden;
+  height: 180px;
+  background: color-mix(in srgb, var(--surface-2) 85%, #fff 15%);
+}
+
+.coverPreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .formActions {
@@ -341,10 +412,20 @@
 }
 
 .emptyState {
-  margin-top: 0.8rem;
-  border: 1px dashed var(--line);
-  border-radius: 0.8rem;
-  padding: 0.9rem;
+  border: 1px dashed color-mix(in srgb, var(--line) 70%, transparent 30%);
+  border-radius: 0.95rem;
+  background: color-mix(in srgb, var(--surface) 95%, #fff 5%);
+  padding: 1rem;
+  display: grid;
+  gap: 0.42rem;
+}
+
+.emptyState h2 {
+  font-family: var(--font-title);
+  font-size: 1.58rem;
+}
+
+.emptyState p {
   color: var(--muted);
 }
 
@@ -354,32 +435,28 @@
   }
 }
 
-@media (max-width: 980px) {
-  .header {
+@media (max-width: 960px) {
+  .hero {
     flex-direction: column;
   }
 
-  .headerActions {
+  .heroActions {
     justify-content: flex-start;
   }
 
-  .contentGrid {
+  .blogLayout {
     grid-template-columns: 1fr;
   }
 
-  .formPanel {
-    order: -1;
+  .sidebar {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   }
 }
 
 @media (max-width: 760px) {
   .page {
-    width: min(1180px, calc(100% - 1rem));
+    width: min(1160px, calc(100% - 1rem));
     padding-top: 1rem;
-  }
-
-  .statsGrid {
-    grid-template-columns: repeat(2, minmax(120px, 1fr));
   }
 
   .controls {
@@ -388,5 +465,9 @@
 
   .formRow {
     grid-template-columns: 1fr;
+  }
+
+  .featuredMedia {
+    min-height: 190px;
   }
 }

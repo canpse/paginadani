@@ -1,17 +1,17 @@
 :root {
-  --bg: #eff3ef;
-  --surface: #ffffff;
-  --surface-2: #f7faf7;
-  --text: #15201a;
-  --text-soft: #314138;
-  --muted: #617069;
-  --line: #d5dfd8;
-  --accent: #0f766e;
-  --ok: #0a8f54;
-  --warn: #be7d00;
-  --danger: #b53939;
-  --font-title: "Palatino Linotype", "Book Antiqua", "Garamond", serif;
-  --font-body: "Trebuchet MS", "Segoe UI", "Verdana", sans-serif;
+  --bg: #0d0d0f;
+  --surface: #e8dcc8;
+  --surface-2: #d8c6ad;
+  --text: #221915;
+  --text-soft: #3b2e27;
+  --muted: #6f6154;
+  --line: #b89e83;
+  --accent: #8a4a3b;
+  --ok: #46684b;
+  --warn: #a37a30;
+  --danger: #8f3d34;
+  --font-title: "Garamond", "Times New Roman", serif;
+  --font-body: "Georgia", "Times New Roman", serif;
 }
 
 * {
@@ -32,14 +32,14 @@ body {
   background:
     linear-gradient(
       180deg,
-      rgba(247, 250, 247, 0.92) 0%,
-      rgba(239, 243, 239, 0.86) 44%,
-      rgba(232, 237, 232, 0.92) 100%
+      rgba(14, 11, 13, 0.95) 0%,
+      rgba(18, 13, 16, 0.88) 44%,
+      rgba(10, 8, 10, 0.94) 100%
     ),
-    radial-gradient(circle at 10% -10%, color-mix(in srgb, var(--accent) 16%, transparent 84%), transparent 32%),
+    radial-gradient(circle at 12% -8%, color-mix(in srgb, var(--accent) 30%, transparent 70%), transparent 40%),
     url("/images/Art_of_Jessica_Cioffi_Loputyn_66.webp");
-  background-size: 100% 100%, 100% 100%, 170%;
-  background-position: center, center, center 34%;
+  background-size: 100% 100%, 100% 100%, 175%;
+  background-position: center, center, center 32%;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }

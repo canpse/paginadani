@@ -9,6 +9,12 @@ import type {
 
 export const STORAGE_KEY = "wisenerd:media-entries:v1";
 
+export const fallbackCoverByType: Record<MediaType, string> = {
+  livro: "/images/Art_of_Jessica_Cioffi_Loputyn_40.webp",
+  filme: "/images/Art_of_Jessica_Cioffi_Loputyn_66.webp",
+  serie: "/images/Art_of_Jessica_Cioffi_Loputyn_12.webp",
+};
+
 export const defaultFilters: MediaFilters = {
   query: "",
   type: "all",
@@ -21,6 +27,7 @@ export const defaultFilters: MediaFilters = {
 export const defaultForm: MediaFormInput = {
   title: "",
   type: "filme",
+  coverImage: fallbackCoverByType.filme,
   status: "quero",
   rating: 0,
   consumedOn: "",
@@ -107,15 +114,9 @@ export function parseStoredEntries(raw: string | null): MediaEntry[] | null {
       return [];
     }
 
-    const parsed: MediaEntry[] = [];
-
-    for (const entry of data) {
-      if (!isMediaEntry(entry)) {
-        continue;
-      }
-
-      parsed.push(entry);
-    }
+    const parsed = data
+      .map((entry) => normalizeStoredEntry(entry))
+      .filter((entry): entry is MediaEntry => entry !== null);
 
     return parsed.length > 0 ? parsed : null;
   } catch {
@@ -123,28 +124,56 @@ export function parseStoredEntries(raw: string | null): MediaEntry[] | null {
   }
 }
 
-function isMediaEntry(value: unknown): value is MediaEntry {
+function normalizeStoredEntry(value: unknown): MediaEntry | null {
   if (!value || typeof value !== "object") {
-    return false;
+    return null;
   }
 
   const entry = value as Record<string, unknown>;
 
-  return (
-    typeof entry.id === "string" &&
-    typeof entry.title === "string" &&
-    (entry.type === "livro" || entry.type === "filme" || entry.type === "serie") &&
-    (entry.status === "quero" ||
-      entry.status === "consumindo" ||
-      entry.status === "concluido" ||
-      entry.status === "pausado") &&
-    typeof entry.rating === "number" &&
-    typeof entry.consumedOn === "string" &&
-    typeof entry.notes === "string" &&
-    Array.isArray(entry.tags) &&
-    typeof entry.createdAt === "string" &&
-    typeof entry.updatedAt === "string"
-  );
+  const validType = entry.type === "livro" || entry.type === "filme" || entry.type === "serie";
+  const validStatus =
+    entry.status === "quero" ||
+    entry.status === "consumindo" ||
+    entry.status === "concluido" ||
+    entry.status === "pausado";
+
+  if (
+    typeof entry.id !== "string" ||
+    typeof entry.title !== "string" ||
+    !validType ||
+    !validStatus ||
+    typeof entry.rating !== "number" ||
+    typeof entry.consumedOn !== "string" ||
+    typeof entry.notes !== "string" ||
+    !Array.isArray(entry.tags) ||
+    typeof entry.createdAt !== "string" ||
+    typeof entry.updatedAt !== "string"
+  ) {
+    return null;
+  }
+
+  const type = entry.type as MediaType;
+  const status = entry.status as MediaStatus;
+
+  const coverImage =
+    typeof entry.coverImage === "string" && entry.coverImage.trim().length > 0
+      ? entry.coverImage
+      : fallbackCoverByType[type];
+
+  return {
+    id: entry.id,
+    title: entry.title,
+    type,
+    coverImage,
+    status,
+    rating: entry.rating,
+    consumedOn: entry.consumedOn,
+    notes: entry.notes,
+    tags: entry.tags.filter((tag): tag is string => typeof tag === "string"),
+    createdAt: entry.createdAt,
+    updatedAt: entry.updatedAt,
+  };
 }
 
 export function applyFilters(entries: MediaEntry[], filters: MediaFilters): MediaEntry[] {
@@ -197,6 +226,7 @@ export function toFormInput(entry: MediaEntry): MediaFormInput {
   return {
     title: entry.title,
     type: entry.type,
+    coverImage: entry.coverImage,
     status: entry.status,
     rating: entry.rating,
     consumedOn: entry.consumedOn,

@@ -64,3 +64,20 @@ Feedback rapido e prioridade clara para proximas entregas.
 
 Responsavel:
 canpse
+
+## [2026-02-27] Direcao diegetica confirmada
+Contexto:
+O objetivo passou a ser uma experiencia \"meio blog\" com identidade forte e integrada.
+
+Decisao:
+Adotar interface diegetica em formato de caderno, com tom misterioso dark academia,
+inspirada na estetica da artista Loputyn e referencias em `public/images`.
+
+Alternativas descartadas:
+Manter visual de dashboard convencional.
+
+Impacto:
+Produto ganha assinatura visual unica sem abandonar usabilidade.
+
+Responsavel:
+canpse + codex
