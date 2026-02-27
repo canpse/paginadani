@@ -50,6 +50,18 @@ const COVER_PRESETS = [
   "/images/Art_of_Jessica_Cioffi_Loputyn_7.webp",
 ];
 
+const POST_FRAME_ARTS = [
+  "/assets/posts/capas/card-post-mid-01.png",
+  "/assets/posts/capas/card-post-low-01.png",
+];
+
+const NOTE_LINKS = [
+  { label: "Banco de Series", href: "https://www.bancodeseries.com.br/" },
+  { label: "Filmow", href: "https://filmow.com/" },
+  { label: "Skoob", href: "https://www.skoob.com.br/" },
+  { label: "Instagram", href: "https://www.instagram.com/" },
+];
+
 function useIsClient() {
   return useSyncExternalStore(
     () => () => {},
@@ -411,40 +423,58 @@ export default function MediaTrackerApp() {
 
   return (
     <div className={styles.page}>
+      <img
+        alt=""
+        aria-hidden="true"
+        className={styles.pageOrnamentLeft}
+        src="/assets/decorativos/ornamentos/lobo-lateral-esq-01.png"
+      />
+
       <header className={styles.hero}>
-        <div>
-          <p className={styles.kicker}>wisenerd journal</p>
-          <h1>Caderno de Midias</h1>
-          <p className={styles.subtitle}>
-            Um arquivo misterioso em formato de caderno antigo para registrar o que ela le,
-            assiste e sente em textos curtos.
-          </p>
+        <div className={styles.heroBannerWrap}>
+          <img
+            alt=""
+            aria-hidden="true"
+            className={styles.heroBanner}
+            src="/assets/fundos/hero/header-vintage-01.png"
+          />
         </div>
 
-        <div className={styles.heroActions}>
-          <button className={styles.primaryButton} onClick={openComposerForCreate} type="button">
-            Novo post
-          </button>
-          <button className={styles.secondaryButton} onClick={onExport} type="button">
-            Exportar JSON
-          </button>
-          <button
-            className={styles.secondaryButton}
-            onClick={() => fileInputRef.current?.click()}
-            type="button"
-          >
-            Importar JSON
-          </button>
-          <button className={styles.dangerButton} onClick={clearAll} type="button">
-            Limpar tudo
-          </button>
-          <input
-            accept="application/json"
-            hidden
-            onChange={onImport}
-            ref={fileInputRef}
-            type="file"
-          />
+        <div className={styles.heroBody}>
+          <div>
+            <p className={styles.kicker}>wisenerd journal</p>
+            <h1>Caderno de Midias</h1>
+            <p className={styles.subtitle}>
+              Um arquivo misterioso em formato de caderno antigo para registrar o que ela le,
+              assiste e sente em textos curtos.
+            </p>
+          </div>
+
+          <div className={styles.heroActions}>
+            <button className={styles.primaryButton} onClick={openComposerForCreate} type="button">
+              Novo post
+            </button>
+            <button className={styles.secondaryButton} onClick={onExport} type="button">
+              Exportar JSON
+            </button>
+            <button
+              className={styles.secondaryButton}
+              onClick={() => fileInputRef.current?.click()}
+              type="button"
+            >
+              Importar JSON
+            </button>
+            <button className={styles.dangerButton} onClick={clearAll} type="button">
+              Limpar tudo
+            </button>
+            <input
+              accept="application/json"
+              hidden
+              onChange={onImport}
+              ref={fileInputRef}
+              type="file"
+            />
+          </div>
         </div>
       </header>
 
@@ -453,14 +483,23 @@ export default function MediaTrackerApp() {
       ) : null}
 
       <section className={styles.controls}>
-        <label className={styles.controlField}>
+        <label className={`${styles.controlField} ${styles.searchField}`}>
           <span>Buscar no caderno</span>
-          <input
-            onChange={(event) => updateFilter("query", event.target.value)}
-            placeholder="Titulo, tag ou trecho"
-            type="search"
-            value={filters.query}
-          />
+          <div className={styles.searchShell}>
+            <img
+              alt=""
+              aria-hidden="true"
+              className={styles.searchArtwork}
+              src="/assets/icones/ui/search-bar-01.png"
+            />
+            <input
+              className={styles.searchInput}
+              onChange={(event) => updateFilter("query", event.target.value)}
+              placeholder="Titulo, tag ou trecho"
+              type="search"
+              value={filters.query}
+            />
+          </div>
         </label>
 
         <label className={styles.controlField}>
@@ -547,49 +586,81 @@ export default function MediaTrackerApp() {
 
       <section className={styles.blogLayout}>
         <main className={styles.feedColumn}>
+          <div className={styles.feedRibbon}>
+            <img
+              alt=""
+              aria-hidden="true"
+              className={styles.feedRibbonArt}
+              src="/assets/decorativos/fitas/titulo-latest-posts-01.png"
+            />
+            <p>ultimos posts</p>
+          </div>
+
           {featuredEntry ? (
             <article className={styles.featuredPost}>
+              <span className={styles.waxSeal}>W</span>
+              <img
+                alt=""
+                aria-hidden="true"
+                className={styles.featuredFlower}
+                src="/assets/decorativos/ornamentos/ornamento-floral-direito-01.png"
+              />
+
               <div className={styles.featuredMedia}>
-                <img alt={`Capa de ${featuredEntry.title}`} src={featuredEntry.coverImage} />
+                <img
+                  alt=""
+                  aria-hidden="true"
+                  className={styles.featuredFrame}
+                  src="/assets/posts/capas/card-post-hero-01.png"
+                />
+                <img
+                  alt={`Capa de ${featuredEntry.title}`}
+                  className={styles.featuredCover}
+                  src={featuredEntry.coverImage}
+                />
               </div>
 
-              <div className={styles.postMetaTop}>
-                <span>{typeLabel(featuredEntry.type)}</span>
-                <span>{statusLabel(featuredEntry.status)}</span>
-                <span>{stars(featuredEntry.rating)}</span>
-              </div>
+              <div className={styles.featuredSheet}>
+                <p className={styles.manuscriptMarker}>Entrada principal</p>
 
-              <h2>{featuredEntry.title}</h2>
-
-              <p className={styles.postDates}>
-                Consumido em {prettyDate(featuredEntry.consumedOn)} | atualizado em{" "}
-                {prettyDate(featuredEntry.updatedAt.slice(0, 10))}
-              </p>
-
-              <p className={styles.postBody}>{excerpt(featuredEntry.notes, 250)}</p>
-
-              {featuredEntry.tags.length > 0 ? (
-                <div className={styles.tagRow}>
-                  {featuredEntry.tags.map((tag) => (
-                    <span key={`${featuredEntry.id}-${tag}`}>#{tag}</span>
-                  ))}
+                <div className={styles.postMetaTop}>
+                  <span>{typeLabel(featuredEntry.type)}</span>
+                  <span>{statusLabel(featuredEntry.status)}</span>
+                  <span>{stars(featuredEntry.rating)}</span>
                 </div>
-              ) : null}
 
-              <div className={styles.postActions}>
-                <button onClick={() => startEditing(featuredEntry)} type="button">
-                  Editar post
-                </button>
-                <button onClick={() => duplicateEntry(featuredEntry)} type="button">
-                  Duplicar
-                </button>
-                <button
-                  className={styles.textDanger}
-                  onClick={() => removeEntry(featuredEntry.id)}
-                  type="button"
-                >
-                  Remover
-                </button>
+                <h2>{featuredEntry.title}</h2>
+
+                <p className={styles.postDates}>
+                  Consumido em {prettyDate(featuredEntry.consumedOn)} | atualizado em{" "}
+                  {prettyDate(featuredEntry.updatedAt.slice(0, 10))}
+                </p>
+
+                <p className={styles.postBody}>{excerpt(featuredEntry.notes, 250)}</p>
+
+                {featuredEntry.tags.length > 0 ? (
+                  <div className={styles.tagRow}>
+                    {featuredEntry.tags.map((tag) => (
+                      <span key={`${featuredEntry.id}-${tag}`}>#{tag}</span>
+                    ))}
+                  </div>
+                ) : null}
+
+                <div className={styles.postActions}>
+                  <button onClick={() => startEditing(featuredEntry)} type="button">
+                    Editar post
+                  </button>
+                  <button onClick={() => duplicateEntry(featuredEntry)} type="button">
+                    Duplicar
+                  </button>
+                  <button
+                    className={styles.textDanger}
+                    onClick={() => removeEntry(featuredEntry.id)}
+                    type="button"
+                  >
+                    Remover
+                  </button>
+                </div>
               </div>
             </article>
           ) : (
@@ -604,8 +675,17 @@ export default function MediaTrackerApp() {
 
           {secondaryEntries.length > 0 ? (
             <div className={styles.postGrid}>
-              {secondaryEntries.map((entry) => (
+              {secondaryEntries.map((entry, index) => (
                 <article className={styles.postCard} key={entry.id}>
+                  <div className={styles.postFrameWrap}>
+                    <img
+                      alt=""
+                      aria-hidden="true"
+                      className={styles.postFrame}
+                      src={POST_FRAME_ARTS[index % POST_FRAME_ARTS.length]}
+                    />
+                  </div>
+
                   <div className={styles.postThumbWrap}>
                     <img alt={`Capa de ${entry.title}`} className={styles.postThumb} src={entry.coverImage} />
                   </div>
@@ -650,6 +730,12 @@ export default function MediaTrackerApp() {
 
         <aside className={styles.sidebar}>
           <section className={styles.sideCard}>
+            <img
+              alt=""
+              aria-hidden="true"
+              className={styles.sideArtwork}
+              src="/assets/decorativos/ornamentos/sidebar-about-01.png"
+            />
             <h3>Resumo</h3>
             <ul>
               <li>Total de posts: {stats.total}</li>
@@ -661,6 +747,12 @@ export default function MediaTrackerApp() {
           </section>
 
           <section className={styles.sideCard}>
+            <img
+              alt=""
+              aria-hidden="true"
+              className={styles.sideArtwork}
+              src="/assets/decorativos/ornamentos/sidebar-categories-01.png"
+            />
             <h3>Tags frequentes</h3>
             {topTags.length > 0 ? (
               <div className={styles.tagCloud}>
@@ -687,8 +779,32 @@ export default function MediaTrackerApp() {
               <p className={styles.sideEmpty}>Sem datas registradas.</p>
             )}
           </section>
+
+          <section className={styles.sideCard}>
+            <h3>Atalhos dela</h3>
+            <ul className={styles.linkList}>
+              {NOTE_LINKS.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} rel="noreferrer" target="_blank">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <img
+              alt=""
+              aria-hidden="true"
+              className={styles.socialArtwork}
+              src="/assets/icones/ui/social-row-01.png"
+            />
+          </section>
         </aside>
       </section>
+
+      <div className={styles.cornerOrnaments} aria-hidden="true">
+        <img src="/assets/decorativos/ornamentos/canto-inferior-esq-01.png" alt="" />
+        <img src="/assets/decorativos/ornamentos/canto-inferior-dir-01.png" alt="" />
+      </div>
 
       {composerOpen ? (
         <section className={styles.composerPanel}>
