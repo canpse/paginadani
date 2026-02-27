@@ -38,10 +38,18 @@ body {
     ),
     radial-gradient(circle at 10% -10%, color-mix(in srgb, var(--accent) 16%, transparent 84%), transparent 32%),
     url("/images/Art_of_Jessica_Cioffi_Loputyn_66.webp");
-  background-size: cover;
-  background-position: center;
+  background-size: 100% 100%, 100% 100%, 170%;
+  background-position: center, center, center 34%;
   background-repeat: no-repeat;
   background-attachment: fixed;
+}
+
+@media (max-width: 900px) {
+  body {
+    background-size: 100% 100%, 100% 100%, 240%;
+    background-position: center, center, center 28%;
+    background-attachment: scroll;
+  }
 }
 
 button,
